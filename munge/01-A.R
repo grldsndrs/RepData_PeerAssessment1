@@ -3,7 +3,8 @@
 #' author: "grldsndrs"
 #' date:
 #' output:
-#' md_document:
+#'   md_document:
+#'   variant: markdown_github
 #' keep_md: true
 #' ---
 #'

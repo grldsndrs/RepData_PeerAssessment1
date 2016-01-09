@@ -1,11 +1,6 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-author: "grldsndrs"
-date: "January 7, 2016"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
+grldsndrs  
+January 7, 2016  
 
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
@@ -16,7 +11,8 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r eval=FALSE}
+
+```r
 library(ProjectTemplate)
 load.project()
 tidyData <- activity[complete.cases(activity),]
@@ -29,9 +25,7 @@ xts(order.by = dts,unique = TRUE)
 
 You can also embed plots, for example:
 
-```{r, echo=FALSE}
-plot(cars)
-```
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
 
 
 ## What is mean total number of steps taken per day?

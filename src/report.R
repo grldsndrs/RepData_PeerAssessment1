@@ -16,15 +16,15 @@ wd <- getwd();
 mdList <- paste0(wd,c("/munge/01-A.R" ,"/src/generate_plots.R"))
 
 # Create new analysis script
-file.remove("README.Rmd")
-file.create("README.Rmd")
-sapply(mdList, function(x) file.append("README.Rmd",x),simplify = FALSE)
+file.remove("README.R")
+file.create("README.R")
+sapply(mdList, function(x) file.append("notebook.R",x),simplify = FALSE)
 
 # Use knitr to generate report
-rmarkdown::knitr_options_html(fig_width=3, fig_height=2,keep_md=TRUE,fig_retina	=NULL)
-rmarkdown::render(input="README.Rmd",output_format="md_document")
+rmarkdown::render(input="README.R",output_format=NULL)
 
 rmarkdown::includes( after_body=TRUE)
+rmarkdown::knitr_options_html()
 rmarkdown::tufte_handout()
 
 

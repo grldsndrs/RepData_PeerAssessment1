@@ -3,7 +3,7 @@
 #' author: "grldsndrs"
 #' date:
 #' output:
-#' md_document:
+#' html_document:
 #' keep_md: true
 #' ---
 #'

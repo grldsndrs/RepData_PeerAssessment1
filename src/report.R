@@ -18,7 +18,7 @@ mdList <- paste0(wd,c("/munge/01-A.R" ,"/src/generate_plots.R"))
 # Create new analysis script
 file.remove("README.R")
 file.create("README.R")
-sapply(mdList, function(x) file.append("notebook.R",x),simplify = FALSE)
+sapply(mdList, function(x) file.append("README.R",x),simplify = FALSE)
 
 # Use knitr to generate report
 rmarkdown::render(input="README.R",output_format=NULL)

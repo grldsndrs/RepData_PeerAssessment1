@@ -23,7 +23,7 @@ tidyData <- activity[complete.cases(activity),]
 
 ### Data tidying
 
-create a time series by adding the intervals in minutes to the date
+> create a time series by adding the intervals in minutes to the date
 
 dts <- as.POSIXct(tidyData$date) + minutes(as.numeric(tidyData$interval))
 
@@ -38,11 +38,27 @@ tidyData <- mutate(tidyData,
 
 > create a time series
 
-```{r ech0 = FALSE}
+```{r eval = TRUE}
 tidyDataXTS <- xts(tidyData ,order.by = dts,unique = TRUE)
 ```
+ ```{r echo=FALSE}
+ print(head(sample_n(tidyData,nrow(tidyData))))
+ ```
 
+#### What is mean total number of steps taken per day?
 
+> calculate the **_total number of steps taken per day_**
+
+dys = endpoints(tidyDataXTS, 'days')
+tidyData <- group_by(tidyData, date)%>%
+  summarise(meanSteps.Dy = mean(steps),
+            medianSteps.Dy=median(steps),
+            steps.Dy = sum(steps),
+            maxSteps.Dy=max(steps))%>%
+  merge(tidyData)%>%
+  mutate(meanSteps.Dy.Dys=(meanSteps.Dy*steps.Dy/sum(steps)))
+
+tidyDataXTS <- xts(tidyData ,order.by = dts,unique = TRUE)
 
 rmarkdown::render(input="PA1_template.Rmd",output_format="md_document",output_file = "README.md")
 

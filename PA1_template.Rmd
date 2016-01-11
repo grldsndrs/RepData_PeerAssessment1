@@ -11,8 +11,9 @@ output:
  ```
 
 ## Loading and preprocessing the data
-> _"Project Template"_ uses the defualt settings to load the csv
-> file in the data folder of the working diriectory.
+
+ _"Project Template"_ uses the defualt settings to load the csv
+ file in the data folder of the working diriectory.
 
 ### Data cleaning
 

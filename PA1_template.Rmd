@@ -42,8 +42,8 @@ tidyData <- mutate(tidyData,
 tidyDataXTS <- xts(tidyData ,order.by = dts,unique = TRUE)
 ```
 
-```{r echo=TRUE}
 print(head(sample_n(tidyData,nrow(tidyData))))
+```{r echo=TRUE}
 ```
 
 #### What is mean total number of steps taken per day?

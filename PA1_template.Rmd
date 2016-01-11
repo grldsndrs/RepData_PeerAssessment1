@@ -286,12 +286,12 @@ missingValues <- interpolatedTidyData[missingValuesIndicies]
 > create a new dataset that is equal to the original dataset but with the missing data filled in.
 
 ```{r eval=TRUE,eval=FALSE}
-
 unTidyData$newSteps <- activity$steps
 unTidyData$newSteps[missingValuesIndicies] <- missingValues
 newTidyData <- unTidyData
 
-# calculate the new summary statistics
+calculate the new summary statistics
+
 newTidyData <- group_by(newTidyData, date)%>%
   summarise(newMeanSteps.Dy = mean(newSteps),
             newMedianSteps.Dy=median(newSteps),
@@ -302,6 +302,151 @@ newTidyData <- group_by(newTidyData, date)%>%
 
 ```
 
+> create a new time series
+
+newTidyDataXTS <- xts(newTidyData ,order.by = newDts,unique = TRUE)
+
+
+> make a histogram of the total number of steps taken each day
+
+```{r echo=TRUE}
+print(sample(newTidyData$newSteps.Dy,10))
+```
+
+> make a histogram of the **_total number of steps taken per day_**
+
+
+create extra margin room on the right for an axis
+
+
+```{r, echo=FALSE}
+ par(mar=c(5, 5, 4, 2) + 0.1,mgp=c(4,1,0))
+ plot.xts(newTidyDataXTS$newSteps.Dy, type = 'h',# histogram
+   major.ticks = 'days',
+   minor.ticks = FALSE,
+   las = 2,
+   xaxt = "n",
+         xlab = "day",
+         ylab = "Total Number of Steps in day",
+        main = "Counts of Data Acquisitioned Steps")
+axis(1, at=newDts[dys],labels=1:(length(dys)-1),las=1)
+```
+
+> calculate and report **_the mean_**
+
+```{r echo=TRUE}
+print(sample(newTidyData$newMeanSteps.Dy,10))
+```
+
+> and **_the median_**
+
+```{r echo=TRUE}
+print(sample(newTidyData$newMedianSteps.Dy,10))
+```
+
+> of **_total number of steps taken in a day per day_**
+
+#### Do these values differ from the estimates from the first part of the assignment?
+
+```{r, echo=FALSE}
+par(mar=c(5, 4, 4, 2) + 0.1,mgp=c(3,1,0))
+plot(
+  newTidyData$meanSteps.Dy,newTidyData$newMeanSteps.Dy,
+  col = alpha("black", .5),
+  las = 2,
+  type = "p",# points
+  xlab = "",
+  ylab = "",
+  xaxt = "n",
+  yaxt = "n",
+  main = "Compare the means and medians"
+)
+par(new=TRUE)
+plot(
+  newTidyData$newMedianSteps.Dy,
+  col = alpha("blue", .01),
+  las = 2,
+  type = "p",# points
+  xlab = "Omited NAs",
+  ylab = "Interpolated NAs",
+  main = ""
+)
+legend(x = "topleft",
+       c("Interpolated Mean vs NAs omitted Mean",
+       "Interpolated median"),
+       col = c(alpha("black", 1),alpha("blue", 1)),
+       lwd = c(3),
+       bty ="n")
+```
+
+```{r, echo=FALSE}
+par(mar=c(5, 4, 4, 2) + 0.1,mgp=c(3,1,0))
+plot.xts(
+  tidyDataXTS$meanSteps.Dy.Dys,
+  major.ticks = 'days',
+  minor.ticks = FALSE,
+  col = alpha("black", .75),
+  las = 2,
+  xaxt = "n",
+  type = "l",# line
+  xlab = "day",
+  ylab = "average number of steps taken in a day",
+  main = "Average Daily Activity Pattern",
+  auto.grid = FALSE
+)
+
+axis(1, at=dts[dys],labels=1:(length(dys)-1),las=1)
+par(new=TRUE)
+plot.xts(
+  newTidyDataXTS$newMeanSteps.Dy.Dys,
+  major.ticks = 'days',
+  minor.ticks = FALSE,
+  col = alpha("chocolate", .5),
+  las = 2,
+  xaxt = "n",
+  yaxt = "n",
+  type = "l",# line
+  main ="",
+  auto.grid = FALSE
+)
+legend(x = "topleft",
+       c("Day which has max num steps",
+         "Avg num steps/day",
+         "Interpolated day which has max num steps",
+         "Interpolated Avg num steps/day"),
+       col = c(alpha("blue", 1),
+               alpha("black", .75),
+               alpha("yellow", 1),
+               alpha("chocolate", .5)),
+       lwd = c(6,5,6,5),
+       bty ="n")
+maxNumStepsValue = max(tidyData$meanSteps.Dy.Dys)
+maxNumStepsDateTime = dts[tidyData$meanSteps.Dy.Dys==maxNumStepsValue]
+abline( v = maxNumStepsDateTime, col = alpha("blue", .03) ,lwd = .1)
+
+newMaxNumStepsValue = max(newTidyData$newMeanSteps.Dy.Dys)
+newIntervalOfMax = newTidyData$interval[newTidyData$newMeanSteps.Dy.Dys==newMaxNumStepsValue]
+newMaxNumStepsDateTime = newDts[newTidyData$newMeanSteps.Dy.Dys==newMaxNumStepsValue]
+abline( v = newMaxNumStepsDateTime, col = alpha("yellow", .03),lwd = .1)
+```
+
+#### What is the impact of inputing missing data on the estimates of the total daily number of steps?
+
+>> _From the above graph it can be seen how the interpolated data is shifted.
+The brown lines follow closely the black but is slightly shifted in time.
+This is a direct resut of the k nearest neighbor classification algorithm,
+ employed to predict the missing values._
+
+>> _Additionally the day with the max average has not changed.
+   Note the greenish  transparent line at day 50. The greenish color is caused by
+   the over lap of the data points from both series (blue and yellow)._
+
+### Are there differences in activity patterns between weekdays and weekends?
+#### Use the dataset with the filled-in missing values for this part.
+
+> Create a new factor variable in the dataset with two levels – “weekday” and “weekend”
+
+> indicating whether a given date is a weekday or weekend day.
 
 rmarkdown::render(input="PA1_template.Rmd",output_format="md_document",output_file = "README.md")
 

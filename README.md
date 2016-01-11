@@ -1,4 +1,4 @@
-`## [1] "Sun Jan 10 22:53:04 2016"`
+`## [1] "Sun Jan 10 22:58:20 2016"`
 
 Loading and preprocessing the data
 ----------------------------------
@@ -17,13 +17,15 @@ create a time series by adding the intervals in minutes to the date
 dts \<-
 as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e**r**i**c*(*t**i**d**y**D**a**t**a*interval))
 
-> choose appropriate classes for features
+> **choose appropriate classes for features**
 
     tidyData <- mutate(tidyData,
                        steps= as.numeric(steps),
                        date = as.factor(date),
                        interval=as.numeric(interval))
-    #' > create a time series
+
+> create a time series
+
     tidyDataXTS <- xts(tidyData ,order.by = dts,unique = TRUE)
 
 rmarkdown::render(input="PA1\_template.Rmd",output\_format="md\_document",output\_file
@@ -54,7 +56,7 @@ chunks within the document. You can embed an R code chunk like this:
 
 You can also embed plots, for example:
 
-![](README_files/figure-markdown_strict/unnamed-chunk-5-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-6-1.png)
 
 What is mean total number of steps taken per day?
 -------------------------------------------------

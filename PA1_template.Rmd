@@ -196,9 +196,6 @@ xts(order.by = dts,unique = TRUE)
 
 You can also embed plots, for example:
 
-```{r, echo=FALSE}
-plot(cars)
-```
 
 
 ## What is mean total number of steps taken per day?

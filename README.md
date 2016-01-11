@@ -1,4 +1,4 @@
-`## [1] "Sun Jan 10 23:56:17 2016"`
+`## [1] "Sun Jan 10 23:59:54 2016"`
 
 Loading and preprocessing the data
 ----------------------------------
@@ -33,12 +33,12 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
     print(head(sample_n(tidyData,nrow(tidyData))))
 
     ##       steps       date interval
-    ## 10889    74 2012-11-13     1920
-    ## 10547     0 2012-11-12     1450
-    ## 6307     21 2012-10-24     2130
-    ## 11399    33 2012-11-16     1350
-    ## 1460      0 2012-10-07      135
-    ## 2342      0 2012-10-11      305
+    ## 10496    29 2012-11-12     1035
+    ## 6346      0 2012-10-25       45
+    ## 13074   544 2012-11-22      925
+    ## 4302      0 2012-10-17     2225
+    ## 3442      0 2012-10-14     2245
+    ## 5203      0 2012-10-21      130
 
 #### What is mean total number of steps taken per day?
 
@@ -58,7 +58,7 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
 
     print(sample(tidyData$steps.Dy,10))
 
-    ##  [1]  3219  7047 10183 12883 12426 15414 11829 11015 12426 10571
+    ##  [1] 12426 11352  7047 21194  6778  7336 11352 10056  8918 13294
 
 > make a histogram of the ***total number of steps taken per day***
 
@@ -68,8 +68,8 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
 
     print(sample(tidyData$meanSteps.Dy,10))
 
-    ##  [1] 39.7847222 47.3819444 49.7881944 46.7083333 60.3541667 23.5347222
-    ##  [7]  0.1423611 36.0937500 35.3576389 36.7048611
+    ##  [1] 44.39931 44.73264 34.91667 53.52083 28.93750 50.27083 41.07292
+    ##  [8] 36.80556 50.27083 36.70486
 
 > and ***the median***
 
@@ -137,8 +137,6 @@ chunks within the document. You can embed an R code chunk like this:
     xts(order.by = dts,unique = TRUE)
 
 You can also embed plots, for example:
-
-![](README_files/figure-markdown_strict/unnamed-chunk-15-1.png)
 
 What is mean total number of steps taken per day?
 -------------------------------------------------

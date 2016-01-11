@@ -1,4 +1,4 @@
-`## [1] "Mon Jan 11 00:39:49 2016"`
+`## [1] "Mon Jan 11 00:47:10 2016"`
 
 Loading and preprocessing the data
 ----------------------------------
@@ -33,12 +33,12 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
     print(head(sample_n(tidyData,nrow(tidyData))))
 
     ##       steps       date interval
-    ## 384      42 2012-10-03      755
-    ## 10838     0 2012-11-13     1505
-    ## 5569     48 2012-10-22      800
-    ## 6006      0 2012-10-23     2025
-    ## 8842     67 2012-11-03     1645
-    ## 13730   768 2012-11-24     1605
+    ## 9391      0 2012-11-06     1430
+    ## 8402      0 2012-11-02      405
+    ## 8566    130 2012-11-02     1745
+    ## 7770      0 2012-10-29     2325
+    ## 6769      0 2012-10-26     1200
+    ## 10889    74 2012-11-13     1920
 
 #### What is mean total number of steps taken per day?
 
@@ -58,7 +58,7 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
 
     print(sample(tidyData$steps.Dy,10))
 
-    ##  [1] 13460 12608 15110    41 11162    41 10439  4472 10765 10139
+    ##  [1]  7336    41 11834 14478 10056 12426  8841 10395 10765  8918
 
 > make a histogram of the ***total number of steps taken per day***
 
@@ -67,8 +67,8 @@ calculate and report ***the mean***
 
     print(sample(tidyData$meanSteps.Dy,10))
 
-    ##  [1] 41.09028 18.89236 39.78472 73.59028 41.09028 23.53472 34.91667
-    ##  [8] 53.54167 30.96528 17.42361
+    ##  [1] 34.0937500 34.3750000 41.0902778  0.1423611 46.1597222 43.7777778
+    ##  [7] 49.7881944  0.4375000 46.1597222 46.7083333
 
 > and ***the median***
 
@@ -241,7 +241,7 @@ newTidyDataXTS \<- xts(newTidyData ,order.by = newDts,unique = TRUE)
 
     print(sample(newTidyData$newSteps.Dy,10))
 
-    ##  [1]   126   288 12608   288  7047 12426  8841 10395  8334 15084
+    ##  [1] 11015 17382  3219 15098 10439   288  2492 15098   288   288
 
 > make a histogram of the ***total number of steps taken per day***
 
@@ -253,14 +253,14 @@ create extra margin room on the right for an axis
 
     print(sample(newTidyData$newMeanSteps.Dy,10))
 
-    ##  [1]  1.0000000  0.4375000  8.6527778 47.3819444  1.0000000  0.1423611
-    ##  [7] 11.1770833  1.0000000  1.0000000 30.6284722
+    ##  [1]  1.00000  1.00000 15.52778 38.75694  0.43750  1.00000  1.00000
+    ##  [8] 60.35417 41.09028  1.00000
 
 > and ***the median***
 
     print(sample(newTidyData$newMedianSteps.Dy,10))
 
-    ##  [1] 0 0 0 0 0 0 0 1 1 0
+    ##  [1] 0 0 0 0 0 1 0 0 0 0
 
 > of ***total number of steps taken in a day per day***
 
@@ -290,42 +290,69 @@ create extra margin room on the right for an axis
 
 > indicating whether a given date is a weekday or weekend day.
 
+    weekDayIndices = !(weekdays(newDts,TRUE)==c("Fri" ,"Sat" ,"Sun"))
+    weekEndIndices = (weekdays(newDts,TRUE)==c("Fri" ,"Sat" ,"Sun"))
+
+    Calculate the summary statistics
+
+    newTidyData <- mutate(newTidyData,
+                          dayClass = factor(        # create the weekday/end factor
+                            1+(weekEndIndices),
+                            labels = c("day","end"),
+                            levels = c(1,2)))
+
+    newTidyData.Wd <- newTidyData[weekDayIndices,]
+    newTidyData.Wd <-
+      group_by(newTidyData.Wd,dayClass)%>%
+      summarise(newMeanSteps.Wd = mean(newSteps),  # calculate the weighted average of weekdays
+                newMedianSteps.Wd = median(newSteps),
+                newSteps.Wd = sum(newSteps),
+                newMaxSteps.Wd = max(newSteps))%>%
+      merge(newTidyData.Wd)%>%
+      mutate(newMeanSteps.Wd.Wds=(newMeanSteps.Wd*newSteps.Wd/sum(newSteps)))
+
+    newTidyData.We <- newTidyData[weekEndIndices,]
+    newTidyData.We <-
+      group_by(newTidyData.We,dayClass)%>%
+      summarise(newMeanSteps.We = mean(newSteps),    # calculate the weighted average of weekends
+                newMedianSteps.We=median(newSteps),
+                newSteps.We = sum(newSteps),
+                newMaxSteps.We=max(newSteps))%>%
+      merge(newTidyData.We)%>%
+      mutate(newMeanSteps.We.Wes=(newMeanSteps.We*newSteps.We/sum(newSteps)))
+
+    newTidyDataXTS.Wd <- xts(newTidyData.Wd ,order.by = newDts[weekDayIndices],unique = TRUE)
+    newTidyDataXTS.We <- xts(newTidyData.We ,order.by = newDts[weekEndIndices],unique = TRUE)
+
+Make a panel plot containing a time series plot of the 5-minute interval
+and the average number of steps taken, averaged across all weekday days
+or weekend days.
+
+![](README_files/figure-markdown_strict/unnamed-chunk-26-1.png)
+
+> > **There appears to be some difference in the activity partern based
+> > on the weekend and weekday averages in the above graphs and show
+> > here respectivley**
+
+    head(newTidyDataXTS.We$newMeanSteps.We.Wes)
+
+    ##                     newMeanSteps.We.Wes
+    ## 2012-10-05 00:00:00 "34.22528"         
+    ## 2012-10-05 00:05:00 "34.22528"         
+    ## 2012-10-05 00:15:00 "34.22528"         
+    ## 2012-10-05 00:30:00 "34.22528"         
+    ## 2012-10-05 00:45:00 "34.22528"         
+    ## 2012-10-05 01:00:00 "34.22528"
+
+    head(newTidyDataXTS.Wd$newMeanSteps.Wd.Wds)
+
+    ##                     newMeanSteps.Wd.Wds
+    ## 2012-10-01 00:00:00 "32.35113"         
+    ## 2012-10-01 00:05:00 "32.35113"         
+    ## 2012-10-01 00:10:00 "32.35113"         
+    ## 2012-10-01 00:15:00 "32.35113"         
+    ## 2012-10-01 00:20:00 "32.35113"         
+    ## 2012-10-01 00:25:00 "32.35113"
+
 rmarkdown::render(input="PA1\_template.Rmd",output\_format="md\_document",output\_file
 = "README.md")
-
-Note that the `echo = FALSE` parameter was added to the code chunk to
-prevent printing of the R code that generated the plot.
-
-Loading and preprocessing the data
-----------------------------------
-
-This is an R Markdown document. Markdown is a simple formatting syntax
-for authoring HTML, PDF, and MS Word documents. For more details on
-using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that
-includes both content as well as the output of any embedded R code
-chunks within the document. You can embed an R code chunk like this:
-
-    library(ProjectTemplate)
-    load.project()
-    tidyData <- activity[complete.cases(activity),]
-    # convert date to a time series by adding the intervals in minutes
-    dts <- as.POSIXct(tidyData$date) + minutes(as.numeric(tidyData$interval ))
-    # reshape data into a 1 feature time series
-    tidyData <- select(tidyData ,-date,-interval)%>%
-    xts(order.by = dts,unique = TRUE)
-
-You can also embed plots, for example:
-
-What is mean total number of steps taken per day?
--------------------------------------------------
-
-What is the average daily activity pattern?
--------------------------------------------
-
-Imputing missing values
------------------------
-
-Are there differences in activity patterns between weekdays and weekends?
--------------------------------------------------------------------------

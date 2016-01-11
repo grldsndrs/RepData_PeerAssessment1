@@ -1,4 +1,4 @@
-`## [1] "Mon Jan 11 00:13:40 2016"`
+`## [1] "Mon Jan 11 00:17:17 2016"`
 
 Loading and preprocessing the data
 ----------------------------------
@@ -33,12 +33,12 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
     print(head(sample_n(tidyData,nrow(tidyData))))
 
     ##       steps       date interval
-    ## 9703      0 2012-11-07     1630
-    ## 13957   286 2012-11-25     1100
-    ## 12388     0 2012-11-20       15
-    ## 2925     10 2012-10-13      340
-    ## 9887     55 2012-11-08      750
-    ## 10549     0 2012-11-12     1500
+    ## 10227   450 2012-11-11     1210
+    ## 4383      0 2012-10-18      510
+    ## 1335      0 2012-10-06     1510
+    ## 5519      0 2012-10-22      350
+    ## 11785     0 2012-11-17     2200
+    ## 1272      0 2012-10-06      955
 
 #### What is mean total number of steps taken per day?
 
@@ -58,7 +58,7 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
 
     print(sample(tidyData$steps.Dy,10))
 
-    ##  [1]  8918 15098 12883  9819  8918 11015 12426 10139  5441  8355
+    ##  [1] 11162  3219 14339 14478  8918 11162  8821 10183 12883  9819
 
 > make a histogram of the ***total number of steps taken per day***
 
@@ -67,8 +67,8 @@ calculate and report ***the mean***
 
     print(sample(tidyData$meanSteps.Dy,10))
 
-    ##  [1] 44.48264 46.15972 35.77778 23.53472 30.69792 11.17708 41.09028
-    ##  [8] 28.93750 38.24653 17.42361
+    ##  [1] 39.78472 44.73264 44.73264 18.89236 23.53472 35.35764 30.69792
+    ##  [8] 11.17708 43.77778 53.52083
 
 > and ***the median***
 
@@ -109,7 +109,16 @@ Inputing missing values
 
 > calculate and report the total number of missing values in the dataset
 
-summary(activity)
+    summary(activity)
+
+    ##      steps                date          interval     
+    ##  Min.   :  0.00   2012-10-01:  288   Min.   :   0.0  
+    ##  1st Qu.:  0.00   2012-10-02:  288   1st Qu.: 588.8  
+    ##  Median :  0.00   2012-10-03:  288   Median :1177.5  
+    ##  Mean   : 37.38   2012-10-04:  288   Mean   :1177.5  
+    ##  3rd Qu.: 12.00   2012-10-05:  288   3rd Qu.:1766.2  
+    ##  Max.   :806.00   2012-10-06:  288   Max.   :2355.0  
+    ##  NA's   :2304     (Other)   :15840
 
 > devise a strategy for filling in all of the missing values in the
 > dataset.

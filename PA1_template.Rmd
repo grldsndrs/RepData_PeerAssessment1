@@ -67,7 +67,111 @@ tidyData <- group_by(tidyData, date)%>%
 tidyDataXTS <- xts(tidyData ,order.by = dts,unique = TRUE)
 ```
 
+```{r echo=TRUE}
+print(sample(tidyData$steps.Dy,10))
+```
 
+> make a histogram of the **_total number of steps taken per day_**
+
+```{r, echo=FALSE}
+# create extra margin room on the right for an axis
+ par(mar=c(5, 5, 4, 2) + 0.1,mgp=c(4,1,0))
+ plot.xts(tidyDataXTS$steps.Dy, type = 'h',# histogram
+   major.ticks = 'days',
+   minor.ticks = FALSE,
+   las = 2,
+   xaxt = "n",
+         xlab = "day",
+         ylab = "Total Number of Steps in day",
+        main = "Counts of Data Acquisitioned Steps")
+axis(1, at=dts[dys],labels=1:(length(dys)-1),las=1)
+```
+
+> calculate and report **_the mean_**
+
+```{r echo=TRUE}
+print(sample(tidyData$meanSteps.Dy,10))
+```
+
+ > and **_the median_**
+ 
+```{r echo=TRUE}
+print(sample(tidyData$medianSteps.Dy,10))
+```
+
+> of **_total number of steps taken in a day per day_**
+
+#### What is the average daily activity pattern?
+
+> Make a time series plot of the 5-minute interval
+
+```{r, echo=FALSE}
+par(mar=c(5, 5, 5, 12) + 0.1,mgp=c(4,1,0))
+plot.xts(
+   tidyDataXTS$meanSteps.Dy.Dys,
+  major.ticks = 'days',
+  minor.ticks = FALSE,
+  col = "black",
+  las = 2,
+  xaxt = "n",
+  type = "l",# line
+  xlab = "day",
+  ylab = "average number of steps taken in a day",
+  main = "Average Daily Activity Pattern"
+)
+par(new=TRUE)
+plot.xts(
+ tidyDataXTS$maxSteps.Dy,
+  major.ticks = 'days',
+  minor.ticks = FALSE,
+  col = "gray",
+  las = 2,
+  yaxt = "n",
+  xaxt = "n",
+  type = "l",# line
+  main =""
+)
+axis(4, at=quantile(tidyData$maxSteps.Dy,names = FALSE),las=1)
+mtext("max number of steps on day",side=4,line=3)
+axis(1, at=dts[dys],labels=1:(length(dys)-1),las=1)
+par( xpd = TRUE ,mar = par()$mar + c(0,0,0,7))
+legend(x = "bottomright", inset = c(-0.7,1.1),
+      c("Interal has max num steps", "Avg num steps/day", "Max steps/day"),
+      col = c("blue","black", "gray"),
+      lwd = c(3,2, 2),
+      bty ="n")
+par(xpd = FALSE,mar=c(5, 5, 5, 12) + 0.1,mgp=c(4,1,0))
+maxNumStepsValue = max(tidyData$steps)
+maxNumStepsDateTime = dts[tidyData$steps==maxNumStepsValue]
+abline( v = maxNumStepsDateTime, col = "blue", ,lwd = 3)
+points(maxNumStepsDateTime, maxNumStepsValue, cex= 1, pch =16,col="red")
+```
+
+#### Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+
+> **_The interval is indicated by the red dot on the above plot._**
+
+> It is calculated:
+
+```{r eval=TRUE}
+maxNumStepsValue = max(tidyData$steps)
+intervalOfMax = tidyData$interval[tidyData$steps==maxNumStepsValue]
+maxNumStepsDateTime = dts[tidyData$steps==maxNumStepsValue]
+```
+
+```{r echo=FALSE}
+maxNumStepsValue
+intervalOfMax
+print(format(maxNumStepsDateTime, "%m/%d/%y %H:%M"))
+```
+
+
+##Inputing missing values
+
+>>Note that there are a number of days/intervals where there are missing values.
+>>The presence of missing days may introduce bias into some calculations or summaries of the data.
+
+> calculate and report the total number of missing values in the dataset
 
 rmarkdown::render(input="PA1_template.Rmd",output_format="md_document",output_file = "README.md")
 

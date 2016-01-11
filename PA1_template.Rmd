@@ -42,7 +42,7 @@ tidyData <- mutate(tidyData,
 tidyDataXTS <- xts(tidyData ,order.by = dts,unique = TRUE)
 ```
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 print(head(sample_n(tidyData,nrow(tidyData))))
 ```
 

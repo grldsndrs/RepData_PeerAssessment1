@@ -547,3 +547,4 @@ head(newTidyDataXTS.Wd$newMeanSteps.Wd.Wds)
 ```
 
 rmarkdown::render(input="PA1_template.Rmd",output_format="md_document",output_file = "README.md")
+rmarkdown::render(input="PA1_template.Rmd",output_format="html_document",output_file = "README.md")

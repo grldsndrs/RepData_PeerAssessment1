@@ -1,4 +1,4 @@
-`## [1] "Mon Jan 11 00:04:00 2016"`
+`## [1] "Mon Jan 11 00:13:40 2016"`
 
 Loading and preprocessing the data
 ----------------------------------
@@ -33,12 +33,12 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
     print(head(sample_n(tidyData,nrow(tidyData))))
 
     ##       steps       date interval
-    ## 2317      0 2012-10-11      100
-    ## 3497      0 2012-10-15      320
-    ## 9632     34 2012-11-07     1035
-    ## 8387      0 2012-11-02      250
-    ## 4578     23 2012-10-18     2125
-    ## 11359   197 2012-11-16     1030
+    ## 9703      0 2012-11-07     1630
+    ## 13957   286 2012-11-25     1100
+    ## 12388     0 2012-11-20       15
+    ## 2925     10 2012-10-13      340
+    ## 9887     55 2012-11-08      750
+    ## 10549     0 2012-11-12     1500
 
 #### What is mean total number of steps taken per day?
 
@@ -58,18 +58,17 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
 
     print(sample(tidyData$steps.Dy,10))
 
-    ##  [1] 13294 10395 11162 10183  2492  5018 11352 15084 11352  9819
+    ##  [1]  8918 15098 12883  9819  8918 11015 12426 10139  5441  8355
 
 > make a histogram of the ***total number of steps taken per day***
 
-![](README_files/figure-markdown_strict/unnamed-chunk-8-1.png)
-
-> calculate and report ***the mean***
+![](README_files/figure-markdown_strict/unnamed-chunk-8-1.png) \>
+calculate and report ***the mean***
 
     print(sample(tidyData$meanSteps.Dy,10))
 
-    ##  [1] 35.7777778 18.8923611 50.2708333 49.7881944 35.3576389 37.3784722
-    ##  [7] 47.3819444  0.1423611 46.7361111 36.0937500
+    ##  [1] 44.48264 46.15972 35.77778 23.53472 30.69792 11.17708 41.09028
+    ##  [8] 28.93750 38.24653 17.42361
 
 > and ***the median***
 
@@ -109,6 +108,99 @@ Inputing missing values
 > > some calculations or summaries of the data.
 
 > calculate and report the total number of missing values in the dataset
+
+summary(activity)
+
+> devise a strategy for filling in all of the missing values in the
+> dataset.
+
+> > Use a k nearst neighbors algorithm to predict the missing values
+> > based on the known.
+
+tidyDataSize = nrow(tidyData) trainSetIndicies \<- sample(x =
+1:tidyDataSize, size = floor(.9\*tidyDataSize), replace = FALSE)
+trainingSet = tidyData[trainSetIndicies,]%\>%
+select(-steps,-medianSteps.Dy)%\>% mutate(date= as.numeric(date))%\>%
+scale()
+
+testSetIndicies \<- setdiff(1:tidyDataSize,trainSetIndicies) testSet \<-
+tidyData[testSetIndicies,]%\>% select(-steps,-medianSteps.Dy)%\>%
+mutate(date= as.numeric(date))%\>% scale()
+
+observation \<- select(tidyData[trainSetIndicies,],steps)%\>%
+mutate(steps=as.factor(steps))
+
+testPredictions \<- knn(train = trainingSet, test = testSet, cl =
+observation$steps, k = floor(1.5\*sqrt(tidyDataSize)), prob=TRUE)
+
+> check accuracy of predictions
+
+sum(as.numeric(tidyData$steps[testSetIndicies]==testPredictions))/length(testPredictions)
+
+> > 70% good enough for the purposes here.
+
+> can use paramerter setting to predict the missing values
+
+missingValuesIndicies = is.na(activity$steps)
+
+> get new raw data
+
+unTidyData \<- activity
+
+> get new time series
+
+newDts \<-
+as.POSIXct(unTidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e**r**i**c*(*u**n**T**i**d**y**D**a**t**a*interval
+))
+
+> switch up classes for processing
+
+unTidyData \<- mutate(unTidyData, steps = as.numeric(steps), date =
+as.factor(date), interval = as.numeric(interval))
+
+> initialize the missing values to the mean of the day if it exists or
+> the mean of the data set if not
+
+initialMissingValues \<-
+sapply(activity$date[missingValuesIndicies], function(missingIndexDate) {  unTidyData$steps[as.numeric(unTidyData$date)==as.numeric(missingIndexDate)]
+\<\<- \# try to find date in complete data
+if(length(tidyData*d**a**t**e*[*a**s*.*n**u**m**e**r**i**c*(*t**i**d**y**D**a**t**a*date)==as.numeric(missingIndexDate)]))
+\# set equal to the first value in the mean per day field
+tidyData*m**e**a**n**S**t**e**p**s*.*D**y*[*a**s*.*n**u**m**e**r**i**c*(*t**i**d**y**D**a**t**a*date)==as.numeric(missingIndexDate)][1]
+else \# set equal to set mean mean(tidyData$steps) },simplify = TRUE)
+
+> prep data to predict steps with the nearest neighbor classifier
+
+unTidyData \<- group\_by(unTidyData,date)%\>% summarise(meanSteps.Dy =
+mean(steps), medianSteps.Dy = median(steps), steps.Dy = sum(steps),
+maxSteps.Dy = max(steps))%\>% merge(unTidyData)%\>%
+mutate(meanSteps.Dy.Dys=(meanSteps.Dy\*steps.Dy/sum(steps)))%\>%
+select(-steps,-medianSteps.Dy)%\>% mutate(date = as.numeric(date))
+
+testSet \<- scale(unTidyData)
+
+> predict for all data using parameter found in training the classifier
+
+interpolatedTidyData \<- knn(train = trainingSet, test = testSet, cl =
+observation$steps, k = floor(1.5\*sqrt(tidyDataSize)), prob=TRUE)
+
+missingValues \<- interpolatedTidyData[missingValuesIndicies]
+
+> create a new dataset that is equal to the original dataset but with
+> the missing data filled in.
+
+unTidyData*n**e**w**S**t**e**p**s* \<  − *a**c**t**i**v**i**t**y*steps
+unTidyData$newSteps[missingValuesIndicies] \<- missingValues newTidyData
+\<- unTidyData
+
+calculate the new summary statistics
+====================================
+
+newTidyData \<- group\_by(newTidyData, date)%\>%
+summarise(newMeanSteps.Dy = mean(newSteps),
+newMedianSteps.Dy=median(newSteps), newSteps.Dy = sum(newSteps),
+newMaxSteps.Dy=max(newSteps))%\>% merge(newTidyData)%\>%
+mutate(newMeanSteps.Dy.Dys=(newMeanSteps.Dy\*newSteps.Dy/sum(newSteps)))
 
 rmarkdown::render(input="PA1\_template.Rmd",output\_format="md\_document",output\_file
 = "README.md")

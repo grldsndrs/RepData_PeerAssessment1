@@ -87,7 +87,6 @@ print(sample(tidyData$steps.Dy,10))
         main = "Counts of Data Acquisitioned Steps")
 axis(1, at=dts[dys],labels=1:(length(dys)-1),las=1)
 ```
-
 > calculate and report **_the mean_**
 
 ```{r echo=TRUE}
@@ -169,10 +168,120 @@ print(format(maxNumStepsDateTime, "%m/%d/%y %H:%M"))
 
 ##Inputing missing values
 
->>Note that there are a number of days/intervals where there are missing values.
->>The presence of missing days may introduce bias into some calculations or summaries of the data.
+>> Note that there are a number of days/intervals where there are missing values.
+>> The presence of missing days may introduce bias into some calculations or summaries of the data.
 
 > calculate and report the total number of missing values in the dataset
+
+summary(activity)
+
+> devise a strategy for filling in all of the missing values in the dataset.
+
+>> Use a k nearst neighbors algorithm to predict the missing values based on the known.
+
+tidyDataSize = nrow(tidyData)
+trainSetIndicies <- sample(x = 1:tidyDataSize,
+                           size = floor(.9*tidyDataSize),
+                           replace = FALSE)
+trainingSet = tidyData[trainSetIndicies,]%>%
+  select(-steps,-medianSteps.Dy)%>%
+  mutate(date= as.numeric(date))%>%
+  scale()
+
+testSetIndicies <- setdiff(1:tidyDataSize,trainSetIndicies)
+testSet <- tidyData[testSetIndicies,]%>%
+  select(-steps,-medianSteps.Dy)%>%
+  mutate(date= as.numeric(date))%>%
+  scale()
+
+observation <- select(tidyData[trainSetIndicies,],steps)%>%
+  mutate(steps=as.factor(steps))
+
+testPredictions <- knn(train = trainingSet,
+                       test = testSet,
+                       cl = observation$steps,
+                       k = floor(1.5*sqrt(tidyDataSize)),
+                       prob=TRUE)
+
+> check accuracy of predictions
+
+sum(as.numeric(tidyData$steps[testSetIndicies]==testPredictions))/length(testPredictions)
+
+>> 70% good enough for the purposes here. \n
+
+> can use paramerter setting to predict the missing values
+
+missingValuesIndicies = is.na(activity$steps)
+
+> get new raw data
+
+unTidyData <- activity
+
+> get new time series
+
+newDts <- as.POSIXct(unTidyData$date) + minutes(as.numeric(unTidyData$interval ))
+
+> switch up classes for processing
+
+unTidyData <- mutate(unTidyData,
+                     steps = as.numeric(steps),
+                     date = as.factor(date),
+                     interval = as.numeric(interval))
+
+> initialize the missing values to the mean of the day if it exists
+  or the mean of the data set if not
+
+initialMissingValues <-
+  sapply(activity$date[missingValuesIndicies], function(missingIndexDate) {
+    unTidyData$steps[as.numeric(unTidyData$date)==as.numeric(missingIndexDate)] <<-
+      # try to find date in complete data
+      if(length(tidyData$date[as.numeric(tidyData$date)==as.numeric(missingIndexDate)]))
+        # set equal to the first value in the mean per day field
+        tidyData$meanSteps.Dy[as.numeric(tidyData$date)==as.numeric(missingIndexDate)][1]
+    else
+      # set equal to set mean
+      mean(tidyData$steps)
+  },simplify = TRUE)
+
+> prep data to predict steps with the nearest neighbor classifier
+
+unTidyData <- group_by(unTidyData,date)%>%
+  summarise(meanSteps.Dy = mean(steps),
+            medianSteps.Dy = median(steps),
+            steps.Dy = sum(steps),
+            maxSteps.Dy = max(steps))%>%
+  merge(unTidyData)%>%
+  mutate(meanSteps.Dy.Dys=(meanSteps.Dy*steps.Dy/sum(steps)))%>%
+  select(-steps,-medianSteps.Dy)%>%
+  mutate(date = as.numeric(date))
+
+testSet <- scale(unTidyData)
+
+> predict for all data using parameter found in training the classifier
+
+interpolatedTidyData <- knn(train = trainingSet,
+                            test = testSet,
+                            cl = observation$steps,
+                            k = floor(1.5*sqrt(tidyDataSize)),
+                            prob=TRUE)
+
+missingValues <- interpolatedTidyData[missingValuesIndicies]
+
+> create a new dataset that is equal to the original dataset but with the missing data filled in.
+
+unTidyData$newSteps <- activity$steps
+unTidyData$newSteps[missingValuesIndicies] <- missingValues
+newTidyData <- unTidyData
+
+# calculate the new summary statistics
+newTidyData <- group_by(newTidyData, date)%>%
+  summarise(newMeanSteps.Dy = mean(newSteps),
+            newMedianSteps.Dy=median(newSteps),
+            newSteps.Dy = sum(newSteps),
+            newMaxSteps.Dy=max(newSteps))%>%
+  merge(newTidyData)%>%
+  mutate(newMeanSteps.Dy.Dys=(newMeanSteps.Dy*newSteps.Dy/sum(newSteps)))
+
 
 rmarkdown::render(input="PA1_template.Rmd",output_format="md_document",output_file = "README.md")
 

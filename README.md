@@ -1,4 +1,4 @@
-`## [1] "Sun Jan 10 23:45:03 2016"`
+`## [1] "Sun Jan 10 23:50:06 2016"`
 
 Loading and preprocessing the data
 ----------------------------------
@@ -33,24 +33,28 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
     print(head(sample_n(tidyData,nrow(tidyData))))
 
     ##       steps       date interval
-    ## 4794      0 2012-10-19     1525
-    ## 7040      0 2012-10-27     1035
-    ## 11371     0 2012-11-16     1130
-    ## 5987      0 2012-10-23     1850
-    ## 3732      0 2012-10-15     2255
-    ## 12158     0 2012-11-19      505
+    ## 2288      0 2012-10-10     2235
+    ## 9371     12 2012-11-06     1250
+    ## 9773      0 2012-11-07     2220
+    ## 11605     0 2012-11-17      700
+    ## 6287     38 2012-10-24     1950
+    ## 14452     0 2012-11-27      415
 
 #### What is mean total number of steps taken per day?
 
 > calculate the ***total number of steps taken per day***
 
-dys = endpoints(tidyDataXTS, 'days') tidyData \<- group\_by(tidyData,
-date)%\>% summarise(meanSteps.Dy = mean(steps),
-medianSteps.Dy=median(steps), steps.Dy = sum(steps),
-maxSteps.Dy=max(steps))%\>% merge(tidyData)%\>%
-mutate(meanSteps.Dy.Dys=(meanSteps.Dy\*steps.Dy/sum(steps)))
+    dys = endpoints(tidyDataXTS, 'days')
 
-tidyDataXTS \<- xts(tidyData ,order.by = dts,unique = TRUE)
+    tidyData <- group_by(tidyData, date)%>%
+      summarise(meanSteps.Dy = mean(steps),
+                medianSteps.Dy=median(steps),
+                steps.Dy = sum(steps),
+                maxSteps.Dy=max(steps))%>%
+      merge(tidyData)%>%
+      mutate(meanSteps.Dy.Dys=(meanSteps.Dy*steps.Dy/sum(steps)))
+
+    tidyDataXTS <- xts(tidyData ,order.by = dts,unique = TRUE)
 
 rmarkdown::render(input="PA1\_template.Rmd",output\_format="md\_document",output\_file
 = "README.md")
@@ -80,7 +84,7 @@ chunks within the document. You can embed an R code chunk like this:
 
 You can also embed plots, for example:
 
-![](README_files/figure-markdown_strict/unnamed-chunk-7-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-8-1.png)
 
 What is mean total number of steps taken per day?
 -------------------------------------------------

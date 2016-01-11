@@ -53,7 +53,9 @@ print(head(sample_n(tidyData,nrow(tidyData))))
 
 > calculate the **_total number of steps taken per day_**
 
+```{r eval=TRUE}
 dys = endpoints(tidyDataXTS, 'days')
+
 tidyData <- group_by(tidyData, date)%>%
   summarise(meanSteps.Dy = mean(steps),
             medianSteps.Dy=median(steps),
@@ -63,6 +65,9 @@ tidyData <- group_by(tidyData, date)%>%
   mutate(meanSteps.Dy.Dys=(meanSteps.Dy*steps.Dy/sum(steps)))
 
 tidyDataXTS <- xts(tidyData ,order.by = dts,unique = TRUE)
+```
+
+
 
 rmarkdown::render(input="PA1_template.Rmd",output_format="md_document",output_file = "README.md")
 

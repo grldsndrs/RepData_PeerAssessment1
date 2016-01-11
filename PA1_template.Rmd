@@ -75,6 +75,7 @@ print(sample(tidyData$steps.Dy,10))
 
 ```{r, echo=FALSE}
 # create extra margin room on the right for an axis
+
  par(mar=c(5, 5, 4, 2) + 0.1,mgp=c(4,1,0))
  plot.xts(tidyDataXTS$steps.Dy, type = 'h',# histogram
    major.ticks = 'days',

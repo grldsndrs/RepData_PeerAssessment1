@@ -361,7 +361,8 @@ newTidyDataXTS <- xts(newTidyData ,order.by = newDts,unique = TRUE)
 #'  >>_Additionally the day with the max average has not changed.
 #'    Note the greenish  transparent line at day 50. The greenish color is caused by
 #'    the over lap of the data points from both series (blue and yellow)._
-#' #### Are there differences in activity patterns between weekdays and weekends?
+#'
+#' ### Are there differences in activity patterns between weekdays and weekends?
 #' #### Use the dataset with the filled-in missing values for this part.
 #' > Create a new factor variable in the dataset with two levels – “weekday” and “weekend”
 #' > indicating whether a given date is a weekday or weekend day.
@@ -375,30 +376,37 @@ newTidyData <- mutate(newTidyData,
                         labels = c("day","end"),
                         levels = c(1,2)))
 
-newTidyData <- group_by(newTidyData,dayClass)%>%
-  summarise(newMeanSteps.Wd = mean(newSteps[weekDayIndices]),  # calculate the weighted average of weekdays
-            newMedianSteps.Wd=median(newSteps[weekDayIndices]),
-            newSteps.Wd = sum(newSteps[weekDayIndices]),
-            newMaxSteps.Wd=max(newSteps[weekDayIndices]))%>%
-  merge(newTidyData)%>%
-  mutate(newMeanSteps.Wd.Wds=(newMeanSteps.Wd*newSteps.Wd/sum(newSteps[weekDayIndices])))
+newTidyData.Wd <- newTidyData[weekDayIndices,]
+newTidyData.Wd <-
+  group_by(newTidyData.Wd,dayClass)%>%
+  summarise(newMeanSteps.Wd = mean(newSteps),  # calculate the weighted average of weekdays
+            newMedianSteps.Wd = median(newSteps),
+            newSteps.Wd = sum(newSteps),
+            newMaxSteps.Wd = max(newSteps))%>%
+  merge(newTidyData.Wd)%>%
+  mutate(newMeanSteps.Wd.Wds=(newMeanSteps.Wd*newSteps.Wd/sum(newSteps)))
 
-newTidyData <- group_by(newTidyData,dayClass)%>%
-  summarise(newMeanSteps.We = mean(newSteps[weekEndIndices]),    # calculate the weighted average of weekends
-            newMedianSteps.We=median(newSteps[weekEndIndices]),
-            newSteps.We = sum(newSteps[weekEndIndices]),
-            newMaxSteps.We=max(newSteps[weekEndIndices]))%>%
-  merge(newTidyData)%>%
-  mutate(newMeanSteps.We.Wes=(newMeanSteps.We*newSteps.We/sum(newSteps[weekEndIndices])))
+newTidyData.We <- newTidyData[weekEndIndices,]
+newTidyData.We <-
+  group_by(newTidyData.We,dayClass)%>%
+  summarise(newMeanSteps.We = mean(newSteps),    # calculate the weighted average of weekends
+            newMedianSteps.We=median(newSteps),
+            newSteps.We = sum(newSteps),
+            newMaxSteps.We=max(newSteps))%>%
+  merge(newTidyData.We)%>%
+  mutate(newMeanSteps.We.Wes=(newMeanSteps.We*newSteps.We/sum(newSteps)))
 
-newTidyDataXTS <- xts(newTidyData ,order.by = newDts,unique = TRUE)
-#' Make a panel plot containing a time series plot of the 5-minute interval
-#' and the average number of steps taken,
+newTidyDataXTS.Wd <- xts(newTidyData.Wd ,order.by = newDts[weekDayIndices],unique = TRUE)
+newTidyDataXTS.We <- xts(newTidyData.We ,order.by = newDts[weekEndIndices],unique = TRUE)
+
+#' Make a panel plot containing a time series plot of
+#' the 5-minute interval and the average number of steps taken,
 #' averaged across all weekday days or weekend days.
+#'
 #' ```{r, echo=FALSE}
-#' par(mar=c(5, 4, 4, 2) + 0.1,mgp=c(3,1,0),mfrow=c(2,1))
+#' par(mar=c(5, 5, 4, 2) + 0.1,mgp=c(3,1,0),mfrow=c(2,1))
 #' plot.xts(
-#'   newTidyDataXTS$newMeanSteps.Wd.Wds,
+#'   newTidyDataXTS.Wd$newMeanSteps.Wd.Wds,
 #'   major.ticks = 'days',
 #'   minor.ticks = FALSE,
 #'   col = alpha("black", .75),
@@ -406,51 +414,47 @@ newTidyDataXTS <- xts(newTidyData ,order.by = newDts,unique = TRUE)
 #'   xaxt = "n",
 #'   type = "l",# line
 #'   xlab = "day",
-#'   ylab = "average number of steps taken in a weekday",
+#'   ylab = "Avg steps in a weekday",
 #'   main = "Average Weekly Activity Pattern",
 #'   auto.grid = FALSE
 #' )
+#' legend(x = "topleft",
+#'        c("Avg num steps/weekdays"),
+#'        col = c(alpha("black", .75)),
+#'        lwd = c(5),
+#'        bty ="n")
 #'
 #' axis(1, at=newDts[dys],labels=1:(length(dys)-1),las=1)
-#' newMaxNumStepsValue.Wd = max(newTidyData$new$MeanSteps.Wd.Wds)
-#' newMaxNumStepsDateTime.Wd = newDts[newTidyData$newMeanSteps.Wd.Wds==newMaxNumStepsValue.Wd]
-#' abline( v = newMaxNumStepsDateTime.Wd, col = alpha("blue", .03) ,lwd = .1)
+#' newMaxNumStepsValue.Wd = max(newTidyData.Wd$newMeanSteps.Wd.Wds)
+#' newMaxNumStepsDateTime.Wd = newDts[newTidyData.Wd$newMeanSteps.Wd.Wds==newMaxNumStepsValue.Wd]
 #' plot.xts(
-#'   newTidyDataXTS$newMeanSteps.We.Wes,
+#'   newTidyDataXTS.We$newMeanSteps.We.Wes,
 #'   major.ticks = 'days',
 #'   minor.ticks = FALSE,
 #'   col = alpha("chocolate", .5),
 #'   las = 2,
 #'   xaxt = "n",
-#'   yaxt = "n",
 #'   type = "l",# line
-#'   main ="",
+#'   xlab = "day",
+#'   ylab = "Avg steps in a weekend",
+#'   main ="Average Weekends Activity Pattern",
 #'   auto.grid = FALSE
 #' )
 #' legend(x = "topleft",
-#'        c("Week which has max num steps",
-#'          "Avg num steps/weekdays",
-#'          "Weekend which has max num steps",
-#'          "Weekends Avg num steps/day"),
-#'        col = c(alpha("blue", 1),
-#'                alpha("black", .75),
-#'                alpha("yellow", 1),
-#'                alpha("chocolate", .5)),
-#'        lwd = c(6,5,6,5),
+#'        c("Weekends Avg num steps/day"),
+#'        col = c(alpha("chocolate", .5)),
+#'        lwd = c(5),
 #'        bty ="n")
 #'
-#' newMaxNumStepsValue.We = max(newTidyData$newMeanSteps.We.Wes)
-#' newIntervalOfMax.We = newTidyData$interval[newTidyData$newMeanSteps.We.Wes==newMaxNumStepsValue.We]
-#' newMaxNumStepsDateTime.We = newDts[newTidyData$newMeanSteps.We.Wes==newMaxNumStepsValue.We]
-#' abline( v = newMaxNumStepsDateTime.We, col = alpha("yellow", .03),lwd = .1)
+#' axis(1, at=newDts[dys],labels=1:(length(dys)-1),las=1)
+#' newMaxNumStepsValue.We = max(newTidyData.We$newMeanSteps.We.Wes)
+#' newIntervalOfMax.We = newTidyData.We$interval[newTidyData.We$newMeanSteps.We.Wes==newMaxNumStepsValue.We]
+#' newMaxNumStepsDateTime.We = newDts[newTidyData.We$newMeanSteps.We.Wes==newMaxNumStepsValue.We]
 #' ```
-# #
-# library('ProjectTemplate')
-# load.project()
-# # And then goes on to do something original with the data:
-
-##   plot1 <- ggplot(first.letter.counts, aes(x = V1)) + geom_density()
-## ggsave(file.path('graphs', 'plot1.pdf'))
-#
-## plot2 <- ggplot(second.letter.counts, aes(x = V1)) + geom_density()
-## ggsave(file.path('graphs', 'plot2.pdf'))
+#'
+#' >> **There appears to be some difference in the activity partern
+#' based on the weekend and weekday averages in the above graphs and show here respectivley**
+#' ```{r echo=TRUE}
+#' head(newTidyDataXTS.We$newMeanSteps.We.Wes)
+#' head(newTidyDataXTS.Wd$newMeanSteps.Wd.Wds)
+#' ```

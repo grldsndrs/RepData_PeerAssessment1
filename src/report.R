@@ -13,7 +13,7 @@ load.project()
 
 # List scripts to include in reports
 wd <- getwd();
-mdList <- paste0(wd,c("/munge/01-A.R" ,"/src/generate_plots.R"))
+mdList <- paste0(wd,c("/munge/01-A.R" ))
 
 # Create new analysis script
 file.remove("README.R")

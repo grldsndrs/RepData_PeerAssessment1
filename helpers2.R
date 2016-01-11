@@ -73,9 +73,9 @@ legend(x = "topleft",
        lwd = c(3),
        bty ="n")
 
-par(mar=c(5, 4, 4, 2) + 0.1,mgp=c(3,1,0),mfrow=c(2,1))
+par(mar=c(5, 5, 4, 2) + 0.1,mgp=c(3,1,0),mfrow=c(2,1))
 plot.xts(
-  newTidyDataXTS$newMeanSteps.Wd.Wds,
+  newTidyDataXTS.Wd$newMeanSteps.Wd.Wds,
   major.ticks = 'days',
   minor.ticks = FALSE,
   col = alpha("black", .75),
@@ -83,40 +83,39 @@ plot.xts(
   xaxt = "n",
   type = "l",# line
   xlab = "day",
-  ylab = "average number of steps taken in a weekday",
+  ylab = "Average steps taken in a weekday",
   main = "Average Weekly Activity Pattern",
   auto.grid = FALSE
 )
+legend(x = "topleft",
+       c("Avg num steps/weekdays"),
+       col = c(alpha("black", .75)),
+       lwd = c(5),
+       bty ="n")
 
 axis(1, at=newDts[dys],labels=1:(length(dys)-1),las=1)
-newMaxNumStepsValue.Wd = max(newTidyData$new$MeanSteps.Wd.Wds)
-newMaxNumStepsDateTime.Wd = newDts[newTidyData$newMeanSteps.Wd.Wds==newMaxNumStepsValue.Wd]
-abline( v = newMaxNumStepsDateTime.Wd, col = alpha("blue", .03) ,lwd = .1)
+newMaxNumStepsValue.Wd = max(newTidyData.Wd$newMeanSteps.Wd.Wds)
+newMaxNumStepsDateTime.Wd = newDts[newTidyData.Wd$newMeanSteps.Wd.Wds==newMaxNumStepsValue.Wd]
 plot.xts(
-  newTidyDataXTS$newMeanSteps.We.Wes,
+  newTidyDataXTS.We$newMeanSteps.We.Wes,
   major.ticks = 'days',
   minor.ticks = FALSE,
   col = alpha("chocolate", .5),
   las = 2,
   xaxt = "n",
-  yaxt = "n",
   type = "l",# line
-  main ="",
+  xlab = "day",
+  ylab = "Average steps taken in a weekend",
+  main ="Average Weekends Activity Pattern",
   auto.grid = FALSE
 )
 legend(x = "topleft",
-       c("Week which has max num steps",
-         "Avg num steps/weekdays",
-         "Weekend which has max num steps",
-         "Weekends Avg num steps/day"),
-       col = c(alpha("blue", 1),
-               alpha("black", .75),
-               alpha("yellow", 1),
-               alpha("chocolate", .5)),
-       lwd = c(6,5,6,5),
+       c("Weekends Avg num steps/day"),
+       col = c(alpha("chocolate", .5)),
+       lwd = c(5),
        bty ="n")
 
-newMaxNumStepsValue.We = max(newTidyData$newMeanSteps.We.Wes)
-newIntervalOfMax.We = newTidyData$interval[newTidyData$newMeanSteps.We.Wes==newMaxNumStepsValue.We]
-newMaxNumStepsDateTime.We = newDts[newTidyData$newMeanSteps.We.Wes==newMaxNumStepsValue.We]
-abline( v = newMaxNumStepsDateTime.We, col = alpha("yellow", .03),lwd = .1)
+axis(1, at=newDts[dys],labels=1:(length(dys)-1),las=1)
+newMaxNumStepsValue.We = max(newTidyData.We$newMeanSteps.We.Wes)
+newIntervalOfMax.We = newTidyData.We$interval[newTidyData.We$newMeanSteps.We.Wes==newMaxNumStepsValue.We]
+newMaxNumStepsDateTime.We = newDts[newTidyData.We$newMeanSteps.We.Wes==newMaxNumStepsValue.We]

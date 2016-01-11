@@ -22,6 +22,8 @@ sapply(mdList, function(x) file.append("README.R",x),simplify = FALSE)
 
 # Use knitr to generate report
 rmarkdown::render(input="README.R",output_format=NULL)
+rmarkdown::render(input="PA1_template.Rmd",output_format="md_document",output_file = "README.md")
+rmarkdown::render(input="README.R",output_format=NULL)
 
 rmarkdown::includes( after_body=TRUE)
 rmarkdown::knitr_options_html()

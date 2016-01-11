@@ -6,7 +6,9 @@ output:
   html_document:
     keep_md: true
 ---
-
+ ```{r echo=FALSE}
+ date()
+ ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 

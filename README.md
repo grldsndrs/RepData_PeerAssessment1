@@ -1,4 +1,4 @@
-`## [1] "Mon Jan 11 00:26:55 2016"`
+`## [1] "Mon Jan 11 00:29:00 2016"`
 
 Loading and preprocessing the data
 ----------------------------------
@@ -33,12 +33,12 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
     print(head(sample_n(tidyData,nrow(tidyData))))
 
     ##       steps       date interval
-    ## 13598     0 2012-11-24      505
-    ## 2872      0 2012-10-12     2315
-    ## 3920      0 2012-10-16     1435
-    ## 13139    15 2012-11-22     1450
-    ## 11471     0 2012-11-16     1950
-    ## 9983    359 2012-11-08     1550
+    ## 1558    230 2012-10-07      945
+    ## 14774    69 2012-11-28      705
+    ## 13700     0 2012-11-24     1335
+    ## 6080      0 2012-10-24      235
+    ## 9663    155 2012-11-07     1310
+    ## 1376    437 2012-10-06     1835
 
 #### What is mean total number of steps taken per day?
 
@@ -58,7 +58,7 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
 
     print(sample(tidyData$steps.Dy,10))
 
-    ##  [1] 10139  7047 15420 10765  3219 12426 13294  8334   126 12426
+    ##  [1]  8334  5018  8918  7047 10119 15414 10600 11458 13646 17382
 
 > make a histogram of the ***total number of steps taken per day***
 
@@ -67,8 +67,8 @@ calculate and report ***the mean***
 
     print(sample(tidyData$meanSteps.Dy,10))
 
-    ##  [1] 35.777778 60.354167 38.246528 42.069444 46.159722 35.135417 38.756944
-    ##  [8]  8.652778 15.527778 46.736111
+    ##  [1] 53.52083 36.09375 73.59028 34.09375 35.77778 35.35764 24.46875
+    ##  [8] 38.24653 46.15972 44.39931
 
 > and ***the median***
 
@@ -153,6 +153,8 @@ Inputing missing values
 > check accuracy of predictions
 
     sum(as.numeric(tidyData$steps[testSetIndicies]==testPredictions))/length(testPredictions)
+
+    ## [1] 0.7393582
 
 > > 70% good enough for the purposes here.
 

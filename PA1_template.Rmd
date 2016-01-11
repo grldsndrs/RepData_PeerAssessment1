@@ -213,7 +213,7 @@ testPredictions <- knn(train = trainingSet,
 
 > check accuracy of predictions
 
-```{r echo=TRUE, eval=FALSE}
+```{r echo=TRUE, eval=TRUE}
 sum(as.numeric(tidyData$steps[testSetIndicies]==testPredictions))/length(testPredictions)
 
 ```

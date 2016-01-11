@@ -1,4 +1,8 @@
-`## [1] "Sun Jan 10 22:32:40 2016"`
+`## [1] "Sun Jan 10 22:36:32 2016"` \#\# Loading and preprocessing the
+data \> *"Project Template"* uses the defualt settings to load the
+csv \> file in the data folder of the working diriectory.
+
+### Data cleaning
 
 Note that the `echo = FALSE` parameter was added to the code chunk to
 prevent printing of the R code that generated the plot.

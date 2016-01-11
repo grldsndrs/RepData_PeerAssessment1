@@ -1,4 +1,4 @@
-`## [1] "Sun Jan 10 22:45:58 2016"`
+`## [1] "Sun Jan 10 22:53:04 2016"`
 
 Loading and preprocessing the data
 ----------------------------------
@@ -10,18 +10,21 @@ csv file in the data folder of the working diriectory.
 
     tidyData <- activity[complete.cases(activity),]
 
-' \#\#\# Data tidying
-=====================
+### Data tidying
 
 create a time series by adding the intervals in minutes to the date
-===================================================================
 
 dts \<-
-as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e**r**i**c*(*t**i**d**y**D**a**t**a*interval
-)) \#' \> choose appropriate classes for features tidyData \<-
-mutate(tidyData, steps= as.numeric(steps), date = as.factor(date),
-interval=as.numeric(interval)) \#' \> create a time series tidyDataXTS
-\<- xts(tidyData ,order.by = dts,unique = TRUE)
+as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e**r**i**c*(*t**i**d**y**D**a**t**a*interval))
+
+> choose appropriate classes for features
+
+    tidyData <- mutate(tidyData,
+                       steps= as.numeric(steps),
+                       date = as.factor(date),
+                       interval=as.numeric(interval))
+    #' > create a time series
+    tidyDataXTS <- xts(tidyData ,order.by = dts,unique = TRUE)
 
 rmarkdown::render(input="PA1\_template.Rmd",output\_format="md\_document",output\_file
 = "README.md")
@@ -51,7 +54,7 @@ chunks within the document. You can embed an R code chunk like this:
 
 You can also embed plots, for example:
 
-![](README_files/figure-markdown_strict/unnamed-chunk-4-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-5-1.png)
 
 What is mean total number of steps taken per day?
 -------------------------------------------------

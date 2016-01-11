@@ -1,4 +1,4 @@
-`## [1] "Mon Jan 11 00:32:51 2016"`
+`## [1] "Mon Jan 11 00:39:49 2016"`
 
 Loading and preprocessing the data
 ----------------------------------
@@ -33,12 +33,12 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
     print(head(sample_n(tidyData,nrow(tidyData))))
 
     ##       steps       date interval
-    ## 6679      0 2012-10-26      430
-    ## 1074      0 2012-10-05     1725
-    ## 9318      0 2012-11-06      825
-    ## 729       0 2012-10-04     1240
-    ## 6868     65 2012-10-26     2015
-    ## 12859    51 2012-11-21     1530
+    ## 384      42 2012-10-03      755
+    ## 10838     0 2012-11-13     1505
+    ## 5569     48 2012-10-22      800
+    ## 6006      0 2012-10-23     2025
+    ## 8842     67 2012-11-03     1645
+    ## 13730   768 2012-11-24     1605
 
 #### What is mean total number of steps taken per day?
 
@@ -58,7 +58,7 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
 
     print(sample(tidyData$steps.Dy,10))
 
-    ##  [1]  3219  9819 10139 11015  7336 15414 11834  8821 15110 12883
+    ##  [1] 13460 12608 15110    41 11162    41 10439  4472 10765 10139
 
 > make a histogram of the ***total number of steps taken per day***
 
@@ -67,8 +67,8 @@ calculate and report ***the mean***
 
     print(sample(tidyData$meanSteps.Dy,10))
 
-    ##  [1] 46.7361111 38.2465278 39.7847222 23.5347222  0.1423611 35.7777778
-    ##  [7] 35.7777778 17.4236111 36.8055556 36.0937500
+    ##  [1] 41.09028 18.89236 39.78472 73.59028 41.09028 23.53472 34.91667
+    ##  [8] 53.54167 30.96528 17.42361
 
 > and ***the median***
 
@@ -223,7 +223,8 @@ Inputing missing values
     unTidyData$newSteps[missingValuesIndicies] <- missingValues
     newTidyData <- unTidyData
 
-    # calculate the new summary statistics
+    calculate the new summary statistics
+
     newTidyData <- group_by(newTidyData, date)%>%
       summarise(newMeanSteps.Dy = mean(newSteps),
                 newMedianSteps.Dy=median(newSteps),
@@ -231,6 +232,63 @@ Inputing missing values
                 newMaxSteps.Dy=max(newSteps))%>%
       merge(newTidyData)%>%
       mutate(newMeanSteps.Dy.Dys=(newMeanSteps.Dy*newSteps.Dy/sum(newSteps)))
+
+> create a new time series
+
+newTidyDataXTS \<- xts(newTidyData ,order.by = newDts,unique = TRUE)
+
+> make a histogram of the total number of steps taken each day
+
+    print(sample(newTidyData$newSteps.Dy,10))
+
+    ##  [1]   126   288 12608   288  7047 12426  8841 10395  8334 15084
+
+> make a histogram of the ***total number of steps taken per day***
+
+create extra margin room on the right for an axis
+
+![](README_files/figure-markdown_strict/unnamed-chunk-20-1.png)
+
+> calculate and report ***the mean***
+
+    print(sample(newTidyData$newMeanSteps.Dy,10))
+
+    ##  [1]  1.0000000  0.4375000  8.6527778 47.3819444  1.0000000  0.1423611
+    ##  [7] 11.1770833  1.0000000  1.0000000 30.6284722
+
+> and ***the median***
+
+    print(sample(newTidyData$newMedianSteps.Dy,10))
+
+    ##  [1] 0 0 0 0 0 0 0 1 1 0
+
+> of ***total number of steps taken in a day per day***
+
+#### Do these values differ from the estimates from the first part of the assignment?
+
+![](README_files/figure-markdown_strict/unnamed-chunk-23-1.png)
+
+![](README_files/figure-markdown_strict/unnamed-chunk-24-1.png)
+
+#### What is the impact of inputing missing data on the estimates of the total daily number of steps?
+
+> > *From the above graph it can be seen how the interpolated data is
+> > shifted. The brown lines follow closely the black but is slightly
+> > shifted in time. This is a direct resut of the k nearest neighbor
+> > classification algorithm, employed to predict the missing values.*
+
+> > *Additionally the day with the max average has not changed. Note the
+> > greenish transparent line at day 50. The greenish color is caused by
+> > the over lap of the data points from both series (blue and yellow).*
+
+### Are there differences in activity patterns between weekdays and weekends?
+
+#### Use the dataset with the filled-in missing values for this part.
+
+> Create a new factor variable in the dataset with two levels â€“
+> â€œweekdayâ€ and â€œweekendâ€
+
+> indicating whether a given date is a weekday or weekend day.
 
 rmarkdown::render(input="PA1\_template.Rmd",output\_format="md\_document",output\_file
 = "README.md")

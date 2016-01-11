@@ -183,6 +183,7 @@ summary(activity)
 
 >> Use a k nearst neighbors algorithm to predict the missing values based on the known.
 
+```{r echo=TRUE,eval=FALSE}
 tidyDataSize = nrow(tidyData)
 trainSetIndicies <- sample(x = 1:tidyDataSize,
                            size = floor(.9*tidyDataSize),
@@ -207,14 +208,22 @@ testPredictions <- knn(train = trainingSet,
                        k = floor(1.5*sqrt(tidyDataSize)),
                        prob=TRUE)
 
+```
+
+
 > check accuracy of predictions
 
+```{r echo=TRUE, eval=FALSE}
 sum(as.numeric(tidyData$steps[testSetIndicies]==testPredictions))/length(testPredictions)
+
+```
+
 
 >> 70% good enough for the purposes here. \n
 
 > can use paramerter setting to predict the missing values
 
+```{r echo=TRUE,eval=FALSE}
 missingValuesIndicies = is.na(activity$steps)
 
 > get new raw data
@@ -271,7 +280,12 @@ interpolatedTidyData <- knn(train = trainingSet,
 
 missingValues <- interpolatedTidyData[missingValuesIndicies]
 
+```
+
+
 > create a new dataset that is equal to the original dataset but with the missing data filled in.
+
+```{r eval=TRUE,eval=FALSE}
 
 unTidyData$newSteps <- activity$steps
 unTidyData$newSteps[missingValuesIndicies] <- missingValues
@@ -285,6 +299,8 @@ newTidyData <- group_by(newTidyData, date)%>%
             newMaxSteps.Dy=max(newSteps))%>%
   merge(newTidyData)%>%
   mutate(newMeanSteps.Dy.Dys=(newMeanSteps.Dy*newSteps.Dy/sum(newSteps)))
+
+```
 
 
 rmarkdown::render(input="PA1_template.Rmd",output_format="md_document",output_file = "README.md")

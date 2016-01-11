@@ -1,8 +1,15 @@
-`## [1] "Sun Jan 10 22:36:32 2016"` \#\# Loading and preprocessing the
-data \> *"Project Template"* uses the defualt settings to load the
-csv \> file in the data folder of the working diriectory.
+`## [1] "Sun Jan 10 22:39:23 2016"`
+
+Loading and preprocessing the data
+----------------------------------
+
+> *"Project Template"* uses the defualt settings to load the csv file in
+> the data folder of the working diriectory.
 
 ### Data cleaning
+
+rmarkdown::render(input="PA1\_template.Rmd",output\_format="md\_document",output\_file
+= "README.md")
 
 Note that the `echo = FALSE` parameter was added to the code chunk to
 prevent printing of the R code that generated the plot.

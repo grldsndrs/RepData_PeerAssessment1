@@ -241,7 +241,7 @@ unTidyData <- mutate(unTidyData,
                      date = as.factor(date),
                      interval = as.numeric(interval))
 
-> initialize the missing values to the mean of the day if it exists
+initialize the missing values to the mean of the day if it exists
   or the mean of the data set if not
 
 initialMissingValues <-
@@ -256,7 +256,7 @@ initialMissingValues <-
       mean(tidyData$steps)
   },simplify = TRUE)
 
-> prep data to predict steps with the nearest neighbor classifier
+prep data to predict steps with the nearest neighbor classifier
 
 unTidyData <- group_by(unTidyData,date)%>%
   summarise(meanSteps.Dy = mean(steps),
@@ -270,7 +270,7 @@ unTidyData <- group_by(unTidyData,date)%>%
 
 testSet <- scale(unTidyData)
 
-> predict for all data using parameter found in training the classifier
+predict for all data using parameter found in training the classifier
 
 interpolatedTidyData <- knn(train = trainingSet,
                             test = testSet,

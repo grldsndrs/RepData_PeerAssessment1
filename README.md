@@ -1,4 +1,4 @@
-`## [1] "Mon Jan 11 00:29:00 2016"`
+`## [1] "Mon Jan 11 00:32:51 2016"`
 
 Loading and preprocessing the data
 ----------------------------------
@@ -33,12 +33,12 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
     print(head(sample_n(tidyData,nrow(tidyData))))
 
     ##       steps       date interval
-    ## 1558    230 2012-10-07      945
-    ## 14774    69 2012-11-28      705
-    ## 13700     0 2012-11-24     1335
-    ## 6080      0 2012-10-24      235
-    ## 9663    155 2012-11-07     1310
-    ## 1376    437 2012-10-06     1835
+    ## 6679      0 2012-10-26      430
+    ## 1074      0 2012-10-05     1725
+    ## 9318      0 2012-11-06      825
+    ## 729       0 2012-10-04     1240
+    ## 6868     65 2012-10-26     2015
+    ## 12859    51 2012-11-21     1530
 
 #### What is mean total number of steps taken per day?
 
@@ -58,7 +58,7 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
 
     print(sample(tidyData$steps.Dy,10))
 
-    ##  [1]  8334  5018  8918  7047 10119 15414 10600 11458 13646 17382
+    ##  [1]  3219  9819 10139 11015  7336 15414 11834  8821 15110 12883
 
 > make a histogram of the ***total number of steps taken per day***
 
@@ -67,8 +67,8 @@ calculate and report ***the mean***
 
     print(sample(tidyData$meanSteps.Dy,10))
 
-    ##  [1] 53.52083 36.09375 73.59028 34.09375 35.77778 35.35764 24.46875
-    ##  [8] 38.24653 46.15972 44.39931
+    ##  [1] 46.7361111 38.2465278 39.7847222 23.5347222  0.1423611 35.7777778
+    ##  [7] 35.7777778 17.4236111 36.8055556 36.0937500
 
 > and ***the median***
 
@@ -177,7 +177,7 @@ Inputing missing values
                          date = as.factor(date),
                          interval = as.numeric(interval))
 
-    > initialize the missing values to the mean of the day if it exists
+    initialize the missing values to the mean of the day if it exists
       or the mean of the data set if not
 
     initialMissingValues <-
@@ -192,7 +192,7 @@ Inputing missing values
           mean(tidyData$steps)
       },simplify = TRUE)
 
-    > prep data to predict steps with the nearest neighbor classifier
+    prep data to predict steps with the nearest neighbor classifier
 
     unTidyData <- group_by(unTidyData,date)%>%
       summarise(meanSteps.Dy = mean(steps),
@@ -206,7 +206,7 @@ Inputing missing values
 
     testSet <- scale(unTidyData)
 
-    > predict for all data using parameter found in training the classifier
+    predict for all data using parameter found in training the classifier
 
     interpolatedTidyData <- knn(train = trainingSet,
                                 test = testSet,

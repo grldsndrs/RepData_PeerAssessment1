@@ -166,14 +166,18 @@ print(format(maxNumStepsDateTime, "%m/%d/%y %H:%M"))
 ```
 
 
-##Inputing missing values
+## Inputing missing values
 
 >> Note that there are a number of days/intervals where there are missing values.
 >> The presence of missing days may introduce bias into some calculations or summaries of the data.
 
 > calculate and report the total number of missing values in the dataset
 
+```{r eval=TRUE}
 summary(activity)
+```
+
+
 
 > devise a strategy for filling in all of the missing values in the dataset.
 

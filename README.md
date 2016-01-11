@@ -1,7 +1,9 @@
-`## [1] "Sun Jan 10 22:58:20 2016"`
+`## [1] "Sun Jan 10 23:45:03 2016"`
 
 Loading and preprocessing the data
 ----------------------------------
+
+library('ProjectTemplate') load.project()
 
 *"Project Template"* uses the defualt settings to 'load.project()' the
 csv file in the data folder of the working diriectory.
@@ -12,7 +14,7 @@ csv file in the data folder of the working diriectory.
 
 ### Data tidying
 
-create a time series by adding the intervals in minutes to the date
+> create a time series by adding the intervals in minutes to the date
 
 dts \<-
 as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e**r**i**c*(*t**i**d**y**D**a**t**a*interval))
@@ -24,9 +26,31 @@ as.POSIXct(tidyData*d**a**t**e*) + *m**i**n**u**t**e**s*(*a**s*.*n**u**m**e*
                        date = as.factor(date),
                        interval=as.numeric(interval))
 
-> create a time series
+> **create a time series**
 
     tidyDataXTS <- xts(tidyData ,order.by = dts,unique = TRUE)
+
+    print(head(sample_n(tidyData,nrow(tidyData))))
+
+    ##       steps       date interval
+    ## 4794      0 2012-10-19     1525
+    ## 7040      0 2012-10-27     1035
+    ## 11371     0 2012-11-16     1130
+    ## 5987      0 2012-10-23     1850
+    ## 3732      0 2012-10-15     2255
+    ## 12158     0 2012-11-19      505
+
+#### What is mean total number of steps taken per day?
+
+> calculate the ***total number of steps taken per day***
+
+dys = endpoints(tidyDataXTS, 'days') tidyData \<- group\_by(tidyData,
+date)%\>% summarise(meanSteps.Dy = mean(steps),
+medianSteps.Dy=median(steps), steps.Dy = sum(steps),
+maxSteps.Dy=max(steps))%\>% merge(tidyData)%\>%
+mutate(meanSteps.Dy.Dys=(meanSteps.Dy\*steps.Dy/sum(steps)))
+
+tidyDataXTS \<- xts(tidyData ,order.by = dts,unique = TRUE)
 
 rmarkdown::render(input="PA1\_template.Rmd",output\_format="md\_document",output\_file
 = "README.md")
@@ -56,7 +80,7 @@ chunks within the document. You can embed an R code chunk like this:
 
 You can also embed plots, for example:
 
-![](README_files/figure-markdown_strict/unnamed-chunk-6-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-7-1.png)
 
 What is mean total number of steps taken per day?
 -------------------------------------------------

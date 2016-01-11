@@ -12,6 +12,9 @@ output:
 
 ## Loading and preprocessing the data
 
+library('ProjectTemplate')
+load.project()
+
  _"Project Template"_ uses the defualt settings to 'load.project()' the csv
  file in the data folder of the working diriectory.
 

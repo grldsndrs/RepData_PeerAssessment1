@@ -12,10 +12,26 @@ output:
 
 ## Loading and preprocessing the data
 
- _"Project Template"_ uses the defualt settings to load the csv
+ _"Project Template"_ uses the defualt settings to 'load.project()' the csv
  file in the data folder of the working diriectory.
 
 ### Data cleaning
+
+```{r echo=TRUE}
+tidyData <- activity[complete.cases(activity),]
+
+```
+
+#' ### Data tidying
+# create a time series by adding the intervals in minutes to the date
+dts <- as.POSIXct(tidyData$date) + minutes(as.numeric(tidyData$interval ))
+#' > choose appropriate classes for features
+tidyData <- mutate(tidyData,
+                   steps= as.numeric(steps),
+                   date = as.factor(date),
+                   interval=as.numeric(interval))
+#' > create a time series
+tidyDataXTS <- xts(tidyData ,order.by = dts,unique = TRUE)
 
 rmarkdown::render(input="PA1_template.Rmd",output_format="md_document",output_file = "README.md")
 
